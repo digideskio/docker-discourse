@@ -1,0 +1,83 @@
+#!/bin/bash
+exec 2>&1
+
+export RAILS_ENV=${RAILS_ENV:="production"}
+if [[ -f /etc/service/rails/.error ]]
+then
+  exec bash -c \
+    "echo 'Refusing to start because there was an error.'; sleep 36864"
+fi
+
+source /etc/envars
+if [[ -z "$DISCOURSE_SMTP_SERVER" ]] || [[ -z "$DISCOURSE_DEVELOPER_EMAILS" ]]
+then
+  echo "You have not setup SMTP or Develope Emails, please set them up."
+  exit 1
+fi
+
+: export ${DISCOURSE_DB_PASSWORD:=''}
+: export ${DISCOURSE_DB_USER:="discourse"}
+: export ${DISCOURSE_DB_HOST:="postgresql"}
+: export ${DISCOURSE_DB_NAME:="discourse"}
+: export ${DISCOURSE_DB_PORT:="5432"}
+
+: export ${DISCOURSE_REDIS_PORT:="6379"}
+: export ${DISCOURSE_REDIS_HOST:="redis"}
+: export ${DISCOURSE_REDIS_PASSWORD:=''}
+
+: export ${UNICORN_SIDEKIQS:=1}
+: export ${UNICORN_ENABLE_OOBGC:=0}
+: export ${UNICORN_WORKERS:=2}
+
+touch /opt/discourse/config/discourse.conf
+chown discourse.discourse /opt/discourse/config/discourse.conf
+for v in $(printenv | grep -P '^DISCOURSE_' | grep -vP '^DISCOURSE_(VERSION|HOME|DATA)'); do
+  echo $v | sed -r 's/^DISCOURSE_([^=]+)(.*)/\L\1\2/' >> \
+    /opt/discourse/config/discourse.conf
+done
+
+rm -rf /opt/discourse/{log,tmp}
+for f in log tmp public/assets public/backups public/uploads; do
+  mkdir -p /srv/discourse/$f
+  ln -sf /srv/discourse/$f /opt/discourse/$f
+done
+
+cd /opt/discourse
+ruby -S bundle exec rake tmp:create
+ruby -S bundle exec rake assets:precompile
+ruby -S bundle exec rake db:migrate
+status=$?
+
+if [[ status -ne 0 ]]
+then
+  touch /etc/service/rails/.error
+  echo "There was an error migrating the database."
+  exit 1
+fi
+
+chown -Rh discourse.discourse /{opt,srv}/discourse
+chpst -u discourse \
+  ruby -S bundle exec config/unicorn_launcher \
+    -E production -c config/unicorn.conf.rb &
+
+pid=$!
+while ([[ ! -f tmp/pids/unicorn.pid ]] && [[ $count -lt 24 ]]); do
+  let count=$count+1
+  sleep 1
+done
+
+if [[ ! -f tmp/pids/unicorn.pid ]]
+then
+  touch /etc/service/rails/.error
+  echo "There was an error starting rails."
+  exit 1
+else
+  # Wait for the log to become available, yeah.
+  while ! tail /etc/stdout.d/production.log >/dev/null; do
+    sleep 1
+  done
+
+  sv restart /etc/service/docker >/dev/null
+  wait \
+    $pid
+fi
