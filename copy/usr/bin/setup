@@ -24,6 +24,9 @@ for v in nokogiri nokogumbo; do
 done
 
 bundle install --retry=0 -j 12 --without=development:test
+rm -r /usr/lib/ruby/gems/${RUBY_VERSION%.*}.0/cache/*
+rm -rf ~/.gem
+
 echo libxml2     hold | dpkg --set-selections
 echo libssl1.0.0 hold | dpkg --set-selections
 echo libxslt1    hold | dpkg --set-selections
