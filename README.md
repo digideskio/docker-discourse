@@ -12,8 +12,8 @@ security hazard, so make sure to block this URL.
 
 ## Running
 
-This image recommends: `envygeeks/postgresql` or equiv.
-This image recommends: `envygeeks/nginx` or equiv.
+* This image recommends: `envygeeks/postgresql` or equiv.
+* This image recommends: `envygeeks/nginx` or equiv.
 
 ```shell
 docker run --name discourse -P \
