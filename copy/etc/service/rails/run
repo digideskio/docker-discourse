@@ -33,12 +33,6 @@ for v in $(printenv | grep -P '^DISCOURSE_' | grep -vP '^DISCOURSE_(VERSION|HOME
     /opt/discourse/config/discourse.conf
 done
 
-rm -rf /opt/discourse/{log,tmp}
-for f in log tmp public/assets public/backups public/uploads; do
-  mkdir -p /srv/discourse/$f
-  ln -sf /srv/discourse/$f /opt/discourse/$f
-done
-
 cd /opt/discourse
 ruby -S bundle exec rake tmp:create
 ruby -S bundle exec rake assets:precompile
