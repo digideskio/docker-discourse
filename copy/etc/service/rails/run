@@ -15,19 +15,15 @@ then
   exit 1
 fi
 
-export ${DISCOURSE_DB_PASSWORD:=''}
-export ${DISCOURSE_DB_USER:="discourse"}
-export ${DISCOURSE_DB_HOST:="postgresql"}
-export ${DISCOURSE_DB_NAME:="discourse"}
-export ${DISCOURSE_DB_PORT:="5432"}
-
-export ${DISCOURSE_REDIS_PORT:="6379"}
-export ${DISCOURSE_REDIS_HOST:="redis"}
-export ${DISCOURSE_REDIS_PASSWORD:=''}
-
-export ${UNICORN_SIDEKIQS:=1}
-export ${UNICORN_ENABLE_OOBGC:=0}
-export ${UNICORN_WORKERS:=2}
+export UNICORN_SIDEKIQS=${UNICORN_SIDEKIQS:=1}
+export DISCOURSE_DB_PORT=${DISCOURSE_DB_PORT:=5432}
+export DISCOURSE_DB_USER=${DISCOURSE_DB_USER:="discourse"}
+export DISCOURSE_DB_HOST=${DISCOURSE_DB_HOST:="postgresql"}
+export DISCOURSE_DB_NAME=${DISCOURSE_DB_NAME:="discourse"}
+export DISCOURSE_REDIS_HOST=${DISCOURSE_REDIS_HOST:="redis"}
+export DISCOURSE_REDIS_PORT=${DISCOURSE_REDIS_PORT:=6379}
+export UNICORN_ENABLE_OOBGC=${UNICORN_ENABLE_OOBGC:=0}
+export UNICORN_WORKERS=${UNICORN_WORKERS:=2}
 
 touch /opt/discourse/config/discourse.conf
 chown discourse.discourse /opt/discourse/config/discourse.conf
