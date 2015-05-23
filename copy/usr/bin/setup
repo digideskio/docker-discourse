@@ -31,8 +31,9 @@ echo libxml2     hold | dpkg --set-selections
 echo libssl1.0.0 hold | dpkg --set-selections
 echo libxslt1    hold | dpkg --set-selections
 echo libpq5      hold | dpkg --set-selections
+echo git         hold | dpkg --set-selections
 
-cleanpkgs git libxml2-dev libxslt1-dev libreadline6-dev \
+cleanpkgs libxml2-dev libxslt1-dev libreadline6-dev \
   libssl-dev build-essential libpq-dev
 
 chown -R discourse.discourse /opt/discourse
