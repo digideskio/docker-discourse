@@ -11,6 +11,7 @@ fi
 source /etc/envars
 if [[ -z "$DISCOURSE_SMTP_ADDRESS" ]] || [[ -z "$DISCOURSE_DEVELOPER_EMAILS" ]]
 then
+  touch /etc/service/rails/.error
   echo "You have not setup SMTP or Develope Emails, please set them up."
   exit 1
 fi
