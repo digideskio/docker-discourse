@@ -17,7 +17,6 @@ createdir discourse.discourse \
 cd /opt/discourse
 git clone --single-branch --depth 1 --branch v$DISCOURSE_VERSION \
   https://github.com/discourse/discourse.git .
-rm -rf .git
 
 for v in nokogiri nokogumbo; do
   bundle config build.$v "--use-system-libraries=true --with-xml2-include=/usr/include/libxml2"
