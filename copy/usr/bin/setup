@@ -3,7 +3,7 @@
 source /usr/share/envygeeks/debugvt.bash
 source /usr/share/envygeeks/helpers.bash
 addpkgs git ca-certificates libxml2-dev libxslt1-dev libreadline6-dev \
-  libssl-dev build-essential libpq-dev imagemagick
+  libssl-dev build-essential libpq-dev imagemagick ghostscript
 
 groupadd -rg 620 discourse
 useradd  -u  620 -g 620 \
@@ -30,6 +30,7 @@ echo libxml2     hold | dpkg --set-selections
 echo libpq5      hold | dpkg --set-selections
 echo libssl1.0.0 hold | dpkg --set-selections
 echo imagemagick hold | dpkg --set-selections
+echo ghostscript hold | dpkg --set-selections
 echo libxslt1    hold | dpkg --set-selections
 echo git         hold | dpkg --set-selections
 
