@@ -2,7 +2,7 @@
 exec 2>&1
 
 export RAILS_ENV=${RAILS_ENV:="production"}
-if [[ -f /etc/service/rails/.error ]]
+if [[ -f /etc/service/discourse/.error ]]
 then
   exec bash -c \
     "echo 'Refusing to start because there was an error.'; sleep 36864"
@@ -11,7 +11,7 @@ fi
 source /etc/envars
 if [[ -z "$DISCOURSE_SMTP_ADDRESS" ]] || [[ -z "$DISCOURSE_DEVELOPER_EMAILS" ]]
 then
-  touch /etc/service/rails/.error
+  touch /etc/service/discourse/.error
   echo "You have not setup SMTP or Developer Emails, please set them up."
   exit 1
 fi
@@ -41,12 +41,12 @@ status=$?
 
 if [[ status -ne 0 ]]
 then
-  touch /etc/service/rails/.error
+  touch /etc/service/discourse/.error
   echo "There was an error migrating the database."
   exit 1
 fi
 
-chown -Rh discourse.discourse /{opt,srv}/discourse
+chown -Rh discourse.discourse /opt/discourse
 chpst -u discourse \
   ruby -S bundle exec config/unicorn_launcher \
     -E production -c config/unicorn.conf.rb &
@@ -59,7 +59,7 @@ done
 
 if [[ ! -f tmp/pids/unicorn.pid ]]
 then
-  touch /etc/service/rails/.error
+  touch /etc/service/discourse/.error
   echo "There was an error starting rails."
   exit 1
 else
