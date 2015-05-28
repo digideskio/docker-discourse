@@ -34,9 +34,12 @@ for v in $(printenv | grep -P '^DISCOURSE_' | grep -vP '^DISCOURSE_(VERSION|HOME
 done
 
 cd /opt/discourse
-ruby -S bundle exec rake tmp:create
-ruby -S bundle exec rake assets:precompile
-ruby -S bundle exec rake db:migrate
+sudo -u discourse RAILS_ENV=$RAILS_ENV ruby -S bundle exec rake tmp:create
+sudo -u discourse RAILS_ENV=$RAILS_ENV ruby -S bundle exec rake assets:precompile
+sudo -u discourse RAILS_ENV=$RAILS_ENV ruby -S bundle exec rake assets:clean
+sudo -u discourse RAILS_ENV=$RAILS_ENV ruby -S bundle exec rake db:migrate
+sudo -u discourse RAILS_ENV=$RAILS_ENV ruby -S bundle exec rake uploads:clean_up
+sudo -u discourse RAILS_ENV=$RAILS_ENV ruby -S bundle exec rake avatars:clean
 status=$?
 
 if [[ status -ne 0 ]]
