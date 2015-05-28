@@ -29,7 +29,7 @@ export UNICORN_WORKERS=${UNICORN_WORKERS:=2}
 touch /opt/discourse/config/discourse.conf
 chown discourse.discourse /opt/discourse/config/discourse.conf
 for v in $(printenv | grep -P '^DISCOURSE_' | grep -vP '^DISCOURSE_(VERSION|HOME|DATA)'); do
-  echo $v | sed -r 's/^DISCOURSE_([^=]+)(.*)/\L\1\2/' >> \
+  echo $v | sed -r 's/^DISCOURSE_([^=]+)(.*)/\L\1\E\2/' >> \
     /opt/discourse/config/discourse.conf
 done
 
