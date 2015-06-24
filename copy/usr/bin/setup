@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/bin/bash -e
 
-source /usr/share/envygeeks/debugvt.bash
-source /usr/share/envygeeks/helpers.bash
-addpkgs git ca-certificates libxml2-dev libxslt1-dev libreadline6-dev \
+source /usr/share/docker/helpers
+add-pkgs git ca-certificates libxml2-dev libxslt1-dev libreadline6-dev \
   libssl-dev build-essential libpq-dev imagemagick ghostscript
 
 groupadd -rg 620 discourse
@@ -10,8 +9,8 @@ useradd  -u  620 -g 620 \
   -rMd /home/discourse discourse
 
 rm -rf /opt/discourse
-createdir discourse.discourse /opt/discourse
-createdir discourse.discourse \
+create-dir discourse:discourse /opt/discourse
+create-dir discourse:discourse \
   /home/discourse
 
 cd /opt/discourse
@@ -34,10 +33,10 @@ echo ghostscript hold | dpkg --set-selections
 echo libxslt1    hold | dpkg --set-selections
 echo git         hold | dpkg --set-selections
 
-cleanpkgs libxml2-dev libxslt1-dev libreadline6-dev \
+clean-pkgs libxml2-dev libxslt1-dev libreadline6-dev \
   libssl-dev build-essential libpq-dev
 
-chown -R discourse.discourse /opt/discourse
+chown -R discourse:discourse /opt/discourse
 for f in production.log unicorn.stderr.log unicorn.stdout.log; do
   ln -sf /opt/discourse/log/$f /etc/stdout.d/$f
 done
