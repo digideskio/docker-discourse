@@ -69,7 +69,6 @@ else
     sleep 1
   done
 
-  sv restart /etc/service/docker >/dev/null
   wait \
     $pid
 fi
