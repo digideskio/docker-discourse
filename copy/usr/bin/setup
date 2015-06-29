@@ -4,6 +4,7 @@ source /usr/share/docker/helpers
 add-pkgs git ca-certificates libxml2-dev libxslt1-dev libreadline6-dev \
   libssl-dev build-essential libpq-dev imagemagick ghostscript
 
+enable-stdout-logger
 groupadd -rg 620 discourse
 useradd  -u  620 -g 620 \
   -rMd /home/discourse discourse
